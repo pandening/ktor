@@ -116,7 +116,7 @@ allprojects {
                     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-test-junit', version: kotlin_version
                     implementation group: 'junit', name: 'junit', version: junit_version
 
-implementation "org.jetbrains.kotlinx:atomicfu:$atomic_fu_version"
+                    implementation "org.jetbrains.kotlinx:atomicfu:$atomic_fu_version"
                 }
             }
             nativeMain {
@@ -194,6 +194,13 @@ implementation "org.jetbrains.kotlinx:atomicfu:$atomic_fu_version"
             tasks.withType(Class.forName('org.gradle.nativeplatform.test.tasks.RunTestExecutable')) {
                 args '--ktest_logger=TEAMCITY'
             }
+        }
+    }
+
+    configure(targets) {
+        compilations.all { compilation ->
+            def compileTask = tasks.getByName(compilation.compileKotlinTaskName)
+            compileTask.kotlinOptions.freeCompilerArgs += [useExperimentalOptionString, "-progressive"]
         }
     }
 }
